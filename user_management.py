@@ -46,7 +46,7 @@ def insertFeedback(feedback):
     con.commit()
     con.close()
 
-def simple_check_password(password: str) -> bool:
+def check_password(password):
     if not issubclass(type(password), str):
         return False
     if len(password) < 8:

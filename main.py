@@ -24,10 +24,10 @@ def addFeedback():
         dbHandler.listFeedback()
         return render_template("/success.html", state=True, value="Back")
 
-def make_web_safe(input_string: str) -> str:
+def make_web_safe(feedback):
     to_replace = ["<", ">", ";"]
     replacements = ["%3C", "%3E", "%3B"]
-    char_list = list(input_string)
+    char_list = list(feedback)
     for i in range(len(char_list)):
         if char_list[i] in to_replace:
             index = to_replace.index(char_list[i])
@@ -45,11 +45,11 @@ def signup():
         password = request.form["password"]
         DoB = request.form["dob"]
         dbHandler.insertUser(username, password, DoB)
-        if simple_check_password:
+        if check_password:
             return True
         return render_template("/index.html")
     else:
-        return render_template("/signup.html"), print("INVALID PASSWORD")
+        return render_template("/signup.html")
 
 
 @app.route("/index.html", methods=["POST", "GET", "PUT", "PATCH", "DELETE"])
