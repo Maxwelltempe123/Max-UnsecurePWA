@@ -3,12 +3,14 @@ from flask import render_template
 from flask import request
 from flask import redirect
 import user_management as dbHandler
+import validate_and_sanitise as vs
+from validate_and_sanitise import sanitise
+from validate_and_sanitise import validate_password
 
 # Code snippet for logging a message
 # app.logger.critical("message")
 
 app = Flask(__name__)
-
 
 @app.route("/success.html", methods=["POST", "GET", "PUT", "PATCH", "DELETE"])
 def addFeedback():
@@ -17,23 +19,13 @@ def addFeedback():
         return redirect(url, code=302)
     if request.method == "POST":
         feedback = request.form["feedback"]
+        feedback = sanitise(feedback)
         dbHandler.insertFeedback(feedback)
         dbHandler.listFeedback()
         return render_template("/success.html", state=True, value="Back")
     else:
         dbHandler.listFeedback()
         return render_template("/success.html", state=True, value="Back")
-
-def make_web_safe(feedback):
-    to_replace = ["<", ">", ";"]
-    replacements = ["%3C", "%3E", "%3B"]
-    char_list = list(feedback)
-    for i in range(len(char_list)):
-        if char_list[i] in to_replace:
-            index = to_replace.index(char_list[i])
-            char_list[i] = replacements[index]
-
-
 
 @app.route("/signup.html", methods=["POST", "GET", "PUT", "PATCH", "DELETE"])
 def signup():
@@ -44,10 +36,9 @@ def signup():
         username = request.form["username"]
         password = request.form["password"]
         DoB = request.form["dob"]
+        password = vs.validate_password(password)
         dbHandler.insertUser(username, password, DoB)
-        if check_password:
-            return True
-        return render_template("/index.html")
+        return render_template("/signup.html", state=True)
     else:
         return render_template("/signup.html")
 

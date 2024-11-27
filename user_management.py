@@ -46,31 +46,6 @@ def insertFeedback(feedback):
     con.commit()
     con.close()
 
-def check_password(password):
-    if not issubclass(type(password), str):
-        return False
-    if len(password) < 8:
-        return False
-    if len(password) > 13:
-        return False
-    if re.search(r"[ ]", password):
-        return False
-    if not password.isalpha():
-        return False
-    if not re.search(r"[A-Z]", password):
-        return False
-    if not re.search(r"[a-z]", password):
-        return False
-    if not re.search(r"[0-9]", password):
-        return False
-    if not re.search(r"[@$!%*?&]", password):
-        return False
-    if not re.findall(r"[A-Za-z]", password) < 4:
-        return False
-    if not re.findall(r"[0-9]", password) < 3:
-        return False
-    return True
-
 
 def listFeedback():
     con = sql.connect("database_files/database.db")
