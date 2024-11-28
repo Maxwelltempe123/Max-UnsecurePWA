@@ -3,7 +3,6 @@ from flask import render_template
 from flask import request
 from flask import redirect
 import user_management as dbHandler
-import validate_and_sanitise as vs
 from validate_and_sanitise import sanitise
 from validate_and_sanitise import validate_password
 
@@ -18,9 +17,9 @@ def addFeedback():
         url = request.args.get("url", "")
         return redirect(url, code=302)
     if request.method == "POST":
-        feedback = request.form["feedback"]
-        feedback = sanitise(feedback)
-        dbHandler.insertFeedback(feedback)
+        feedback = request.form.get("feedback", "")
+        sanitized_feedback = sanitise_feedback(feedback)
+        dbHandler.insertFeedback(sanitized_feedback)
         dbHandler.listFeedback()
         return render_template("/success.html", state=True, value="Back")
     else:

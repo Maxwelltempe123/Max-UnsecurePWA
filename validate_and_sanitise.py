@@ -1,13 +1,23 @@
 from flask import current_app as app
+import html
+import os
 import re
 
 # Code snippet for logging a message
 # app.logger.critical("message")
 
-def sanitise(input_string):
-    clean_string = re.sub(r'<.*?>', '', input_string)
-    clean_string = re.escape(clean_string)
-    return clean_string
+def sanitise(feedback):
+    sanitized_feedback = html.escape(feedback)
+    log_feedback(sanitized_feedback)
+    return sanitized_feedback
+
+def log_feedback(feedback):
+    log_file = "feedback_log.txt"
+    try:
+        with open(log_file, "a") as file:
+            file.write(f"{feedback}\n")
+    except Exception as e:
+        print(f"Error logging feedback: {e}")
 
 def validate_password(password):
     if not issubclass(type(password), str):
